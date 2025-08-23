@@ -147,7 +147,7 @@ local buttonData = {
 	["Thunder Z Hub"] = "loadstring(game:HttpGet('https://raw.githubusercontent.com/ThundarZ/Welcome/refs/heads/main/Main/GaG/Main.lua'))()",
 	["Limit Hub"] = "loadstring(game:HttpGet(('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua')))()",
 	["Speed Hub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()',
-	["Quantum Hub (Keyless)"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()'
+	["Quantum Hub (Keyless)"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()',
     ["Jarad's Script"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/jazzedd/Petmut/refs/heads/main/hdjs"))()',
     ["ZysumeHub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()'
 }
