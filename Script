@@ -10,7 +10,7 @@ MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(45, 10, 80)
 MainFrame.BackgroundTransparency = 0.1
 MainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
-MainFrame.Size = UDim2.new(0, 260, 0, 340)
+MainFrame.Size = UDim2.new(0, 260, 0, 340)  -- Height for TikTok label
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.ZIndex = 1
@@ -68,7 +68,7 @@ SearchCorner.CornerRadius = UDim.new(0, 6)
 
 local SearchPadding = Instance.new("UIPadding", SearchBar)
 SearchPadding.PaddingLeft = UDim.new(0, 10)
-SearchPadding.PaddingRight = UDim.new(0, 25)
+SearchPadding.PaddingRight = UDim.new(0, 25) -- space for clear button
 
 local ClearSearchBtn = Instance.new("TextButton")
 ClearSearchBtn.Name = "ClearSearchBtn"
@@ -147,9 +147,9 @@ local buttonData = {
 	["Thunder Z Hub"] = "loadstring(game:HttpGet('https://raw.githubusercontent.com/ThundarZ/Welcome/refs/heads/main/Main/GaG/Main.lua'))()",
 	["Limit Hub"] = "loadstring(game:HttpGet(('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua')))()",
 	["Speed Hub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()',
-	["Quantum Hub (Keyless)"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()',
-	["Jarad's Script"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/jazzedd/Petmut/refs/heads/main/hdjs"))()',
-    ["Zysume Hub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()'
+	["Quantum Hub (Keyless)"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()'
+    ["Jarad's Script"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/jazzedd/Petmut/refs/heads/main/hdjs"))()',
+    ["ZysumeHub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()'
 }
 
 local AllButtons = {}
@@ -160,4 +160,80 @@ for name, scriptStr in pairs(buttonData) do
 	btn.Parent = ScrollingFrame
 	btn.Size = UDim2.new(1, 0, 0, 30)
 	btn.BackgroundColor3 = Color3.fromRGB(120, 60, 200)
-	btn.TextColor3 = Color3.fromRGB
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 14
+	btn.Text = name
+	btn.AutoButtonColor = false
+
+	local btnCorner = Instance.new("UICorner", btn)
+	btnCorner.CornerRadius = UDim.new(0, 6)
+
+	-- Hover effect
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(160, 100, 255)}):Play()
+	end)
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(120, 60, 200)}):Play()
+	end)
+
+	btn.MouseButton1Click:Connect(function()
+		pcall(function()
+			loadstring(scriptStr)()
+		end)
+	end)
+
+	AllButtons[name:lower()] = btn
+end
+
+-- Update canvas size when buttons change
+local function updateCanvas()
+	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
+end
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
+updateCanvas()
+
+-- Search bar logic to filter buttons visually:
+SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+	local query = SearchBar.Text:lower()
+	ClearSearchBtn.Visible = (#query > 0)
+	for name, button in pairs(AllButtons) do
+		button.Visible = string.find(name, query) ~= nil
+	end
+	updateCanvas()
+end)
+
+ClearSearchBtn.MouseButton1Click:Connect(function()
+	SearchBar.Text = ""
+	ClearSearchBtn.Visible = false
+	for _, button in pairs(AllButtons) do
+		button.Visible = true
+	end
+	updateCanvas()
+end)
+
+-- Minimize button logic to toggle UI:
+local minimized = false
+local fullSize = UDim2.new(0, 260, 0, 340)
+local miniSize = UDim2.new(0, 260, 0, 90)
+
+MinimizeBtn.MouseButton1Click:Connect(function()
+	minimized = not minimized
+	if minimized then
+		TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = miniSize}):Play()
+		TweenService:Create(SearchBar, TweenInfo.new(0.2), {TextTransparency = 1, BackgroundTransparency = 1}):Play()
+		TweenService:Create(ClearSearchBtn, TweenInfo.new(0.2), {BackgroundTransparency = 1, TextTransparency = 1}):Play()
+		for _, button in pairs(AllButtons) do
+			TweenService:Create(button, TweenInfo.new(0.2), {BackgroundTransparency = 1, TextTransparency = 1}):Play()
+		end
+		TweenService:Create(ScrollingFrame, TweenInfo.new(0.3), {ScrollBarImageTransparency = 1}):Play()
+	else
+		TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = fullSize}):Play()
+		TweenService:Create(SearchBar, TweenInfo.new(0.2), {TextTransparency = 0, BackgroundTransparency = 0}):Play()
+		TweenService:Create(ClearSearchBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+		for _, button in pairs(AllButtons) do
+			TweenService:Create(button, TweenInfo.new(0.2), {BackgroundTransparency = 0, TextTransparency = 0}):Play()
+		end
+		TweenService:Create(ScrollingFrame, TweenInfo.new(0.3), {ScrollBarImageTransparency = 0}):Play()
+	end
+end)
