@@ -1,0 +1,163 @@
+local TweenService = game:GetService("TweenService")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Jarad'sLibrary"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 10, 80)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
+MainFrame.Size = UDim2.new(0, 260, 0, 340)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.ZIndex = 1
+
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+local UIStroke = Instance.new("UIStroke", MainFrame)
+UIStroke.Color = Color3.fromRGB(180, 100, 255)
+UIStroke.Thickness = 2
+
+local Gradient = Instance.new("UIGradient", MainFrame)
+Gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 0, 100)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 0, 60))
+}
+Gradient.Rotation = 45
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, 0, 0, 35)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "📚 Jarad's Library"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+Title.TextStrokeTransparency = 0.7
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Position = UDim2.new(0, 10, 0, 5)
+
+local LastUsedLabel = Instance.new("TextLabel", MainFrame)
+LastUsedLabel.BackgroundTransparency = 1
+LastUsedLabel.Position = UDim2.new(0, 10, 0, 32)
+LastUsedLabel.Size = UDim2.new(1, -20, 0, 20)
+LastUsedLabel.Font = Enum.Font.GothamBold
+LastUsedLabel.Text = "Last Used: None"
+LastUsedLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
+LastUsedLabel.TextSize = 13
+LastUsedLabel.TextTransparency = 0.1
+LastUsedLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local SearchBar = Instance.new("TextBox", MainFrame)
+SearchBar.PlaceholderText = "Search scripts..."
+SearchBar.Text = ""
+SearchBar.Size = UDim2.new(0, 230, 0, 30)
+SearchBar.Position = UDim2.new(0.5, -115, 0, 55)
+SearchBar.BackgroundColor3 = Color3.fromRGB(60, 20, 100)
+SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+SearchBar.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+SearchBar.Font = Enum.Font.GothamBold
+SearchBar.TextSize = 14
+SearchBar.ClearTextOnFocus = false
+
+local SearchCorner = Instance.new("UICorner", SearchBar)
+SearchCorner.CornerRadius = UDim.new(0, 6)
+
+local SearchPadding = Instance.new("UIPadding", SearchBar)
+SearchPadding.PaddingLeft = UDim.new(0, 10)
+SearchPadding.PaddingRight = UDim.new(0, 25)
+
+local ClearSearchBtn = Instance.new("TextButton")
+ClearSearchBtn.Name = "ClearSearchBtn"
+ClearSearchBtn.Parent = SearchBar
+ClearSearchBtn.Size = UDim2.new(0, 20, 0, 20)
+ClearSearchBtn.Position = UDim2.new(1, -22, 0, 5)
+ClearSearchBtn.BackgroundColor3 = Color3.fromRGB(180, 60, 100)
+ClearSearchBtn.Text = "X"
+ClearSearchBtn.Font = Enum.Font.GothamBold
+ClearSearchBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClearSearchBtn.TextSize = 12
+ClearSearchBtn.Visible = false
+
+local ClearCorner = Instance.new("UICorner", ClearSearchBtn)
+ClearCorner.CornerRadius = UDim.new(1, 0)
+
+local CloseBtn = Instance.new("TextButton", MainFrame)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+CloseBtn.Position = UDim2.new(1, -30, 0, 5)
+CloseBtn.Size = UDim2.new(0, 20, 0, 20)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.TextSize = 12
+
+local CloseCorner = Instance.new("UICorner", CloseBtn)
+CloseCorner.CornerRadius = UDim.new(1, 0)
+
+CloseBtn.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+local MinimizeBtn = Instance.new("TextButton", MainFrame)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(120, 80, 255)
+MinimizeBtn.Position = UDim2.new(1, -55, 0, 5)
+MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
+MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeBtn.TextSize = 12
+
+local MinimizeCorner = Instance.new("UICorner", MinimizeBtn)
+MinimizeCorner.CornerRadius = UDim.new(1, 0)
+
+local ScrollingFrame = Instance.new("ScrollingFrame", MainFrame)
+ScrollingFrame.BackgroundTransparency = 1
+ScrollingFrame.Position = UDim2.new(0, 0, 0, 90)
+ScrollingFrame.Size = UDim2.new(1, 0, 1, -130)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 6
+ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+local UIListLayout = Instance.new("UIListLayout", ScrollingFrame)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 8)
+
+local UIPadding = Instance.new("UIPadding", ScrollingFrame)
+UIPadding.PaddingTop = UDim.new(0, 10)
+UIPadding.PaddingLeft = UDim.new(0, 10)
+UIPadding.PaddingRight = UDim.new(0, 10)
+
+local CreditLabel = Instance.new("TextLabel", MainFrame)
+CreditLabel.BackgroundTransparency = 1
+CreditLabel.Position = UDim2.new(0, 0, 1, -25)
+CreditLabel.Size = UDim2.new(1, 0, 0, 20)
+CreditLabel.Font = Enum.Font.GothamBold
+CreditLabel.Text = "TikTok : @Whosjaradd"
+CreditLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
+CreditLabel.TextSize = 14
+CreditLabel.TextTransparency = 0
+CreditLabel.TextXAlignment = Enum.TextXAlignment.Center
+
+local buttonData = {
+	["DarkScript Spawner"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/veryimportantrr/x/refs/heads/main/gag_visual.lua"))()',
+	["Ronix Hub"] = 'loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/b44706178039e9b88c4d768d4d8b012f.lua"))()',
+	["Thunder Z Hub"] = "loadstring(game:HttpGet('https://raw.githubusercontent.com/ThundarZ/Welcome/refs/heads/main/Main/GaG/Main.lua'))()",
+	["Limit Hub"] = "loadstring(game:HttpGet(('https://raw.githubusercontent.com/FakeModz/LimitHub/refs/heads/main/LimitHub_Luarmor_E.lua')))()",
+	["Speed Hub"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()',
+	["Quantum Hub (Keyless)"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()',
+	["Jarad's Script"] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/jazzedd/Petmut/refs/heads/main/hdjs"))()',
+    ["Zysume Hub'] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ZusumeHub/ZusumeHub/refs/heads/main/UpdateZysume"))()'
+}
+
+local AllButtons = {}
+
+for name, scriptStr in pairs(buttonData) do
+	local btn = Instance.new("TextButton")
+	btn.Name = name:gsub("%W+", "").."Btn"
+	btn.Parent = ScrollingFrame
+	btn.Size = UDim2.new(1, 0, 0, 30)
+	btn.BackgroundColor3 = Color3.fromRGB(120, 60, 200)
+	btn.TextColor3 = Color3.fromRGB
